@@ -32,6 +32,9 @@ jobs:
       - name: Compile Python sources
         run: python -m compileall -q src tests
 
+      - name: Import treatment construction module
+        run: python -c "import sys; sys.path.insert(0, 'src'); import build_unwinding_exposure"
+
       - name: Run tests
         run: python -m pytest -q
 
