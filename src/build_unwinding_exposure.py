@@ -280,6 +280,51 @@ def main():
         f"{len(state)} states/DC."
     )
 
+    q = state["disenrollment_rate_completed"].quantile(
+        [0.05, 0.25, 0.50, 0.75, 0.95]
+    )
+
+    print("Treatment exposure distribution:")
+    print(
+        "  5th={:.3f} 25th={:.3f} median={:.3f} "
+        "75th={:.3f} 95th={:.3f}".format(
+            q.loc[0.05],
+            q.loc[0.25],
+            q.loc[0.50],
+            q.loc[0.75],
+            q.loc[0.95],
+        )
+    )
+
+    print("Highest disenrollment exposure states:")
+    for row in state.nlargest(
+        5, "disenrollment_rate_completed"
+    ).itertuples(index=False):
+        print(
+            f"  {getattr(row, STATE.replace(' ', '_'))}: "
+            f"{row.disenrollment_rate_completed:.3f} "
+            f"({row.months_observed} months)"
+        )
+
+    print("Lowest disenrollment exposure states:")
+    for row in state.nsmallest(
+        5, "disenrollment_rate_completed"
+    ).itertuples(index=False):
+        print(
+            f"  {getattr(row, STATE.replace(' ', '_'))}: "
+            f"{row.disenrollment_rate_completed:.3f} "
+            f"({row.months_observed} months)"
+        )
+
+    incomplete = state.loc[state["months_observed"].lt(14), [
+        STATE,
+        "months_observed",
+        "disenrollment_rate_completed",
+    ]]
+    print(f"States with fewer than 14 observed months: {len(incomplete)}")
+    if not incomplete.empty:
+        print(incomplete.to_string(index=False))
+
 
 if __name__ == "__main__":
     main()
