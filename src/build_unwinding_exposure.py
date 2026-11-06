@@ -297,23 +297,23 @@ def main():
     )
 
     print("Highest disenrollment exposure states:")
-    for row in state.nlargest(
+    for _, row in state.nlargest(
         5, "disenrollment_rate_completed"
-    ).itertuples(index=False):
+    ).iterrows():
         print(
-            f"  {getattr(row, STATE.replace(' ', '_'))}: "
-            f"{row.disenrollment_rate_completed:.3f} "
-            f"({row.months_observed} months)"
+            f"  {row[STATE]}: "
+            f"{row['disenrollment_rate_completed']:.3f} "
+            f"({int(row['months_observed'])} months)"
         )
 
     print("Lowest disenrollment exposure states:")
-    for row in state.nsmallest(
+    for _, row in state.nsmallest(
         5, "disenrollment_rate_completed"
-    ).itertuples(index=False):
+    ).iterrows():
         print(
-            f"  {getattr(row, STATE.replace(' ', '_'))}: "
-            f"{row.disenrollment_rate_completed:.3f} "
-            f"({row.months_observed} months)"
+            f"  {row[STATE]}: "
+            f"{row['disenrollment_rate_completed']:.3f} "
+            f"({int(row['months_observed'])} months)"
         )
 
     incomplete = state.loc[state["months_observed"].lt(14), [
