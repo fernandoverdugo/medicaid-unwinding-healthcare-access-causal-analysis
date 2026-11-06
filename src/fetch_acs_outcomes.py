@@ -13,6 +13,14 @@ YEARS = [2018, 2019, 2021, 2022, 2023, 2024, 2025]
 GROUP = "C27016"
 
 
+VARIABLES = {
+    "under_100_total_19_64": "C27016_006E",
+    "under_100_uninsured_19_64": "C27016_008E",
+    "fpl_100_137_total_19_64": "C27016_016E",
+    "fpl_100_137_uninsured_19_64": "C27016_018E",
+}
+
+
 def group_metadata(year):
     url = (
         f"https://api.census.gov/data/{year}/acs/acs1/groups/"
@@ -23,68 +31,55 @@ def group_metadata(year):
     return response.json(), url
 
 
-def find_variable(variables, poverty_label, coverage_suffix):
-    matches = []
+def validate_variable_labels(year, variables):
+    expected = {
+        "C27016_006E": [
+            "Under 1.00 of poverty threshold",
+            "19 to 64 years",
+        ],
+        "C27016_008E": [
+            "Under 1.00 of poverty threshold",
+            "19 to 64 years",
+            "No health insurance coverage",
+        ],
+        "C27016_016E": [
+            "1.00 to 1.37 of poverty threshold",
+            "19 to 64 years",
+        ],
+        "C27016_018E": [
+            "1.00 to 1.37 of poverty threshold",
+            "19 to 64 years",
+            "No health insurance coverage",
+        ],
+    }
 
-    for name, meta in variables.items():
-        if not name.endswith("E") or name.endswith("EA"):
-            continue
-
-        label = meta.get("label", "")
-        normalized = label.replace(":", "")
-        normalized_poverty = poverty_label.replace(":", "")
-
-        if normalized_poverty not in normalized:
-            continue
-        if "19 to 64 years" not in normalized:
-            continue
-
-        if coverage_suffix == "total":
-            if normalized.endswith("19 to 64 years"):
-                matches.append(name)
-        elif normalized.endswith(
-            f"19 to 64 years!!{coverage_suffix}"
-        ):
-            matches.append(name)
-
-    if len(matches) != 1:
-        raise RuntimeError(
-            f"Expected one {poverty_label} {coverage_suffix} variable; "
-            f"found {matches}"
-        )
-
-    return matches[0]
+    for name, required_tokens in expected.items():
+        label = variables[name]["label"].replace(":", "")
+        for token in required_tokens:
+            if token not in label:
+                raise RuntimeError(
+                    f"{year} {name} label does not match contract: {label}"
+                )
 
 
 def variables_for_year(year):
     metadata, metadata_url = group_metadata(year)
     variables = metadata["variables"]
+    validate_variable_labels(year, variables)
 
-    poverty_groups = [
-        "Under 1.00 of poverty threshold:",
-        "1.00 to 1.37 of poverty threshold:",
-    ]
-
-    result = {
+    return {
         "metadata_url": metadata_url,
-        "groups": {},
+        "groups": {
+            "Under 1.00 of poverty threshold": {
+                "total": VARIABLES["under_100_total_19_64"],
+                "uninsured": VARIABLES["under_100_uninsured_19_64"],
+            },
+            "1.00 to 1.37 of poverty threshold": {
+                "total": VARIABLES["fpl_100_137_total_19_64"],
+                "uninsured": VARIABLES["fpl_100_137_uninsured_19_64"],
+            },
+        },
     }
-
-    for poverty in poverty_groups:
-        result["groups"][poverty] = {
-            "total": find_variable(
-                variables,
-                poverty,
-                "total",
-            ),
-            "uninsured": find_variable(
-                variables,
-                poverty,
-                "No health insurance coverage",
-            ),
-        }
-
-    return result
 
 
 def fetch_year(year):
@@ -98,14 +93,24 @@ def fetch_year(year):
 
     variable_names = list(dict.fromkeys(variable_names))
 
-    api_url = (
-        f"https://api.census.gov/data/{year}/acs/acs1"
-        f"?get={','.join(variable_names)}&for=state:*"
-    )
+    base_url = f"https://api.census.gov/data/{year}/acs/acs1"
+    params = {
+        "get": ",".join(variable_names),
+        "for": "state:*",
+    }
 
-    response = requests.get(api_url, timeout=60)
+    response = requests.get(base_url, params=params, timeout=60)
     response.raise_for_status()
-    payload = response.json()
+
+    try:
+        payload = response.json()
+    except requests.exceptions.JSONDecodeError as exc:
+        raise RuntimeError(
+            f"Census API returned non-JSON content for {year}: "
+            f"{response.text[:300]}"
+        ) from exc
+
+    api_url = response.url
 
     frame = pd.DataFrame(payload[1:], columns=payload[0])
     frame["year"] = year
