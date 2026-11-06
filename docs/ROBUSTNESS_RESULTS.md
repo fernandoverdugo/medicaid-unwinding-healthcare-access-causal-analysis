@@ -23,6 +23,7 @@ The robustness results do not reveal a hidden large positive effect that is bein
 | 5th–95th percentile exposure trim | **−0.491 pp** | 0.440 |
 | Excluding NC and SD 2023 expansion states | **−0.052 pp** | 0.914 |
 | High-vs-low median exposure split | **+0.069 pp** | 0.944 |
+| Excluding 2021 pre-period observation | **−0.015 pp** | 0.978 |
 
 None of these specifications produces a statistically distinguishable treatment effect.
 
@@ -114,6 +115,16 @@ Result:
 > High-exposure states versus lower-exposure states: **+0.069 pp**, p = **0.944**.
 
 This secondary specification is also effectively null.
+
+## Excluding the 2021 pre-period observation
+
+Because the event study showed a statistically nonzero 2021 lead relative to 2022, the primary model was re-estimated without the 2021 pre-period observation.
+
+Result:
+
+> **−0.015 pp** per 10 percentage-point higher disenrollment exposure, p = **0.978**.
+
+Removing the potentially problematic 2021 observation moves the estimate even closer to zero and leaves the substantive conclusion unchanged.
 
 ## What the robustness results support
 
