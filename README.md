@@ -66,15 +66,19 @@ KFF may be used for cross-checking and contextual interpretation, but the analyt
 
 ## Repository status
 
-**Phase 1 — research design and data validation**
+**Phase 2 — treatment construction and audit**
 
-The first milestone is to establish a defensible treatment definition and state-year/state-month panel before estimating treatment effects.
+The causal framework, source registry, treatment-construction pipeline, and automated treatment tests are now in place.
+
+The current primary treatment candidate is the share of **completed renewal outcomes that resulted in disenrollment** during each state's initial 14-month unwinding window. Outcome estimation has intentionally not started yet.
+
+See [Treatment Construction](docs/TREATMENT_CONSTRUCTION.md) for the denominator, state-specific timing rule, updated-report handling, and comparability cautions.
 
 ## Project roadmap
 
-1. Validate authoritative unwinding and outcome data sources.
-2. Build state-level treatment and outcome panels.
-3. Audit treatment timing, exposure, missingness, and comparability.
+1. ~~Validate authoritative unwinding and outcome data sources.~~
+2. **Build and audit the state-level unwinding treatment panel.**
+3. Build state-level outcome panels.
 4. Produce pre-treatment trend diagnostics.
 5. Estimate the primary difference-in-differences specification.
 6. Add event-study and robustness analyses.
@@ -99,6 +103,21 @@ The first milestone is to establish a defensible treatment definition and state-
 ├── requirements.txt
 └── README.md
 ```
+
+## Reproduce treatment construction
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+
+python src/fetch_cms_eligibility_processing.py
+python src/build_unwinding_exposure.py
+python -m pytest -q
+python src/validate_config.py
+```
+
+The CMS ingestion step discovers the current CSV distribution from the Data.Medicaid.gov dataset metadata, with a documented September 2026 release URL as a fallback.
 
 ## Responsible interpretation
 
