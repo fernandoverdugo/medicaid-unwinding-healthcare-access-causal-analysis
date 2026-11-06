@@ -66,28 +66,24 @@ KFF may be used for cross-checking and contextual interpretation, but the analyt
 
 ## Repository status
 
-**Phase 3 — outcome-panel construction**
+**Phase 4 — robustness and sensitivity analysis**
 
-The treatment audit is complete and the primary exposure is now locked **before outcome estimation**.
+Treatment construction and the ACS state-year outcome panel are complete. The primary treatment was locked before outcome estimation.
 
-Primary treatment:
+The preliminary continuous-exposure DiD estimate for a **10 percentage-point higher disenrollment rate** is **−0.095 percentage points** in the low-income adult uninsured rate (95% CI **−1.139 to +0.948 pp**, p = **0.858**).
 
-> **Disenrollment rate among completed renewals during each state's initial 14-month unwinding window**
+This is **not yet presented as a definitive causal null**. The joint pre-trend test has p = **0.096**, and the 2021 event-study lead is statistically nonzero relative to 2022. The project therefore proceeds to robustness analysis rather than treating parallel trends as proven.
 
-The live CMS audit produced complete 14-month treatment windows for all 51 states/DC. The median exposure was **30.7%**, with an interquartile range of **24.6%–38.6%**.
-
-The primary specification will use this exposure continuously rather than forcing states into an arbitrary treatment/control split.
-
-See [Treatment Construction](docs/TREATMENT_CONSTRUCTION.md) and [Treatment Audit](docs/TREATMENT_AUDIT.md).
+See [Treatment Audit](docs/TREATMENT_AUDIT.md), [Outcome Construction](docs/OUTCOME_CONSTRUCTION.md), and [Primary Results](docs/PRIMARY_RESULTS.md).
 
 ## Project roadmap
 
 1. ~~Validate authoritative unwinding and outcome data sources.~~
 2. ~~Build and audit the state-level unwinding treatment panel.~~
-3. **Build state-level outcome panels.**
-4. Produce pre-treatment trend diagnostics.
-5. Estimate the primary difference-in-differences specification.
-6. Add event-study and robustness analyses.
+3. ~~Build state-level outcome panels.~~
+4. ~~Produce pre-treatment trend diagnostics.~~
+5. ~~Estimate the primary difference-in-differences specification.~~
+6. **Run robustness, placebo, and sensitivity analyses.**
 7. Evaluate subgroup and alternative-treatment specifications.
 8. Publish a concise policy-evaluation dashboard or report.
 
