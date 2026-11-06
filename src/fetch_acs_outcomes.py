@@ -96,8 +96,7 @@ def fetch_year(year):
 
     frame = pd.read_csv(
         StringIO(response.text),
-        sep=None,
-        engine="python",
+        sep="|",
         dtype=str,
     )
 
@@ -106,6 +105,7 @@ def fetch_year(year):
         "C27016_008E": "C27016_E008",
         "C27016_016E": "C27016_E016",
         "C27016_018E": "C27016_E018",
+        "#GEO_ID": "GEO_ID",
         "GEOID": "GEO_ID",
         "GEOIDFQ": "GEO_ID",
     }
