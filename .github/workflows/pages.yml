@@ -53,11 +53,17 @@ jobs:
       - name: Estimate primary DiD
         run: python src/estimate_primary_did.py
 
+      - name: Estimate event study
+        run: python src/event_study.py
+
       - name: Run robustness checks
         run: python src/robustness_checks.py
 
       - name: Build dashboard
         run: python src/build_dashboard.py
+
+      - name: Validate dashboard
+        run: python src/validate_dashboard.py
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
