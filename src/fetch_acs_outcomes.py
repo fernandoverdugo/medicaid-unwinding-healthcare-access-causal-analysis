@@ -31,16 +31,19 @@ def find_variable(variables, poverty_label, coverage_suffix):
             continue
 
         label = meta.get("label", "")
-        if poverty_label not in label:
+        normalized = label.replace(":", "")
+        normalized_poverty = poverty_label.replace(":", "")
+
+        if normalized_poverty not in normalized:
             continue
-        if "19 to 64 years:" not in label:
+        if "19 to 64 years" not in normalized:
             continue
 
         if coverage_suffix == "total":
-            if label.endswith("19 to 64 years:"):
+            if normalized.endswith("19 to 64 years"):
                 matches.append(name)
-        elif label.endswith(
-            f"19 to 64 years:!!{coverage_suffix}"
+        elif normalized.endswith(
+            f"19 to 64 years!!{coverage_suffix}"
         ):
             matches.append(name)
 
