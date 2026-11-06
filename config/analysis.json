@@ -2,8 +2,8 @@
   "project": "medicaid-unwinding-healthcare-access-causal-analysis",
   "analysis_level": "state_year",
   "pre_period_target": [
+    2018,
     2019,
-    2020,
     2021,
     2022
   ],
@@ -30,5 +30,9 @@
     "median": 0.307,
     "p75": 0.386,
     "p95": 0.525
-  }
+  },
+  "excluded_outcome_years": [
+    2020
+  ],
+  "outcome_transition_year": 2023
 }
