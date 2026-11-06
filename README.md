@@ -1,8 +1,13 @@
 # Medicaid Unwinding & Healthcare Access — Causal Program Evaluation
 
-A reproducible public-policy evaluation examining whether states with greater Medicaid disenrollment during the post-pandemic unwinding experienced larger changes in health-insurance coverage and healthcare access.
+A reproducible public-policy causal evaluation examining whether states with greater Medicaid disenrollment during the post-pandemic unwinding experienced larger changes in the uninsured rate among low-income adults.
+
+[![Quality checks](https://github.com/fernandoverdugo/medicaid-unwinding-healthcare-access-causal-analysis/actions/workflows/quality-checks.yml/badge.svg)](https://github.com/fernandoverdugo/medicaid-unwinding-healthcare-access-causal-analysis/actions/workflows/quality-checks.yml)
+[![Pages](https://github.com/fernandoverdugo/medicaid-unwinding-healthcare-access-causal-analysis/actions/workflows/pages.yml/badge.svg)](https://github.com/fernandoverdugo/medicaid-unwinding-healthcare-access-causal-analysis/actions/workflows/pages.yml)
 
 **Live dashboard:** https://fernandoverdugo.github.io/medicaid-unwinding-healthcare-access-causal-analysis/
+
+**Final report:** [docs/FINAL_REPORT.md](docs/FINAL_REPORT.md)
 
 ## Core question
 
@@ -16,67 +21,49 @@ The Medicaid continuous-enrollment provision ended on March 31, 2023, after thre
 
 That variation creates an opportunity to study whether administrative implementation translated into measurable downstream changes in coverage and access to care.
 
-## Planned causal design
+## Study design
 
-The primary design will use a **difference-in-differences / event-study framework** with state-level variation in unwinding exposure.
+The final design is a **continuous-exposure difference-in-differences model** with a complementary event study.
 
-The analysis will distinguish:
+- **Treatment:** state disenrollment rate among completed Medicaid renewal outcomes during each state's initial 14-month unwinding window
+- **Primary outcome:** ACS uninsured rate among adults ages 19–64 below 138% of the federal poverty threshold
+- **Pre-period:** 2018, 2019, 2021, 2022
+- **Transition year:** 2023
+- **Post-period:** 2024, 2025
+- **Inference:** state and year fixed effects with standard errors clustered by state
+- **Scope:** 50 states plus the District of Columbia
 
-- **pre-unwinding outcomes:** years before redeterminations resumed;
-- **post-unwinding outcomes:** years after unwinding began;
-- **higher-exposure states:** states with larger finalized disenrollment intensity;
-- **lower-exposure states:** states with lower disenrollment intensity.
+The treatment definition was audited and locked before outcome estimation. The primary specification uses continuous exposure rather than an arbitrary high/low cutoff.
 
-The final specification will be selected only after the treatment definition, outcome coverage, and identifying assumptions are validated.
+## Key finding
 
-## Planned outcomes
+For every **10 percentage-point higher Medicaid disenrollment exposure**, the estimated differential post-period change in the low-income adult uninsured rate was:
 
-Primary outcomes will focus on measures plausibly downstream of Medicaid coverage loss:
+> **−0.095 percentage points**  
+> 95% CI: **−1.139 to +0.948 pp**  
+> p = **0.858**
 
-- uninsured rate;
-- Medicaid coverage rate;
-- delayed or forgone care because of cost, where suitable state-level survey data are available;
-- selected subgroup outcomes for low-income nonelderly adults.
-
-## Causal-inference components
-
-The finished analysis is expected to include:
-
-- transparent treatment construction;
-- pre/post descriptive trends;
-- difference-in-differences estimates;
-- event-study coefficients;
-- state and time fixed effects;
-- clustered standard errors;
-- parallel-trends diagnostics;
-- placebo / falsification tests;
-- alternative treatment definitions;
-- sensitivity and robustness checks;
-- subgroup heterogeneity;
-- explicit causal assumptions and limitations.
+The evidence does not show a robustly larger increase in annual uninsured rates in higher-exposure states. This is **not** evidence that the unwinding had no national, short-duration, subgroup, or administrative effects.
 
 ## Data sources
 
-Planned authoritative sources include:
+- **Centers for Medicare & Medicaid Services (CMS):** monthly Medicaid and CHIP eligibility-processing / renewal outcomes
+- **U.S. Census Bureau ACS 1-Year Table-Based Summary Files:** table C27016 for insurance coverage by poverty ratio and age
+- **Primary-source policy documentation:** used for timing and sensitivity decisions, including contemporaneous Medicaid expansion changes
 
-- **CMS** Medicaid unwinding and enrollment data;
-- **U.S. Census Bureau** ACS coverage outcomes;
-- potentially **NHIS or other federal survey data** where geographic detail supports valid state-level inference;
-- policy/context documentation from CMS and other primary government sources.
+## Methods demonstrated
 
-KFF may be used for cross-checking and contextual interpretation, but the analytical pipeline will prioritize original federal data where feasible.
+Difference-in-differences, continuous treatment exposure, event-study diagnostics, state/year fixed effects, clustered inference, placebo timing, population-weighted estimation, alternative treatment definitions, exposure trimming, leave-one-state-out analysis, policy-confounding exclusions, reproducible data ingestion, automated validation, pytest, and GitHub Actions.
 
 ## Repository status
 
-**Phase 5 — final synthesis and presentation**
+**Analysis complete.**
 
-Treatment construction and the ACS state-year outcome panel are complete. The primary treatment was locked before outcome estimation.
+Treatment construction, outcome construction, pre-trend diagnostics, the primary DiD, event study, placebo tests, and robustness analyses are implemented and reproducible.
 
-The preliminary continuous-exposure DiD estimate for a **10 percentage-point higher disenrollment rate** is **−0.095 percentage points** in the low-income adult uninsured rate (95% CI **−1.139 to +0.948 pp**, p = **0.858**).
+The result is intentionally described as a **qualified causal evaluation** rather than a definitive causal null because the pre-treatment evidence is not perfectly clean: the joint pre-trend test has p = **0.096**, and the 2021 event-study lead is statistically nonzero relative to 2022.
 
-This is **not yet presented as a definitive causal null**. The joint pre-trend test has p = **0.096**, and the 2021 event-study lead is statistically nonzero relative to 2022. The project therefore proceeds to robustness analysis rather than treating parallel trends as proven.
-
-See [Treatment Audit](docs/TREATMENT_AUDIT.md), [Outcome Construction](docs/OUTCOME_CONSTRUCTION.md), and [Primary Results](docs/PRIMARY_RESULTS.md).
+See [Research Design](docs/RESEARCH_DESIGN.md), [Treatment Audit](docs/TREATMENT_AUDIT.md), [Outcome Construction](docs/OUTCOME_CONSTRUCTION.md), [Primary Results](docs/PRIMARY_RESULTS.md), [Robustness Results](docs/ROBUSTNESS_RESULTS.md), and the [Final Report](docs/FINAL_REPORT.md).
 
 ## Robustness snapshot
 
@@ -97,17 +84,6 @@ Leave-one-state-out estimates range from **−0.298 to +0.147 pp**, indicating t
 
 See [Robustness & Sensitivity Results](docs/ROBUSTNESS_RESULTS.md) for interpretation and remaining identification cautions.
 
-## Project roadmap
-
-1. ~~Validate authoritative unwinding and outcome data sources.~~
-2. ~~Build and audit the state-level unwinding treatment panel.~~
-3. ~~Build state-level outcome panels.~~
-4. ~~Produce pre-treatment trend diagnostics.~~
-5. ~~Estimate the primary difference-in-differences specification.~~
-6. ~~Run robustness, placebo, and sensitivity analyses.~~
-7. **Synthesize findings and finalize interpretation.**
-8. Publish a concise policy-evaluation dashboard or report.
-
 ## Repository structure
 
 ```text
@@ -117,17 +93,15 @@ See [Robustness & Sensitivity Results](docs/ROBUSTNESS_RESULTS.md) for interpret
 │   ├── raw/                 # Source data retained in original form when practical
 │   ├── processed/           # Reproducible state-level analytical panels
 │   └── metadata/            # Provenance and validation summaries
-├── docs/
-│   ├── RESEARCH_DESIGN.md   # Causal framework and identifying assumptions
-│   └── DATA_PLAN.md         # Source, treatment, and outcome plan
-├── src/                     # Ingestion, cleaning, estimation, and diagnostics
-├── tests/                   # Data-contract and analysis tests
+├── docs/                    # Research design, construction notes, results, final report
+├── src/                     # Ingestion, cleaning, estimation, diagnostics, dashboard
+├── tests/                   # Data-contract and estimation tests
 ├── LICENSE
 ├── requirements.txt
 └── README.md
 ```
 
-## Reproduce treatment construction
+## Reproduce the full analysis
 
 ```bash
 python -m venv .venv
@@ -136,11 +110,19 @@ python -m pip install -r requirements.txt
 
 python src/fetch_cms_eligibility_processing.py
 python src/build_unwinding_exposure.py
+python src/fetch_acs_outcomes.py
+python src/build_outcome_panel.py
+python src/pretrend_diagnostic.py
+python src/estimate_primary_did.py
+python src/event_study.py
+python src/robustness_checks.py
+python src/build_dashboard.py
+
 python -m pytest -q
 python src/validate_config.py
 ```
 
-The CMS ingestion step discovers the current CSV distribution from the Data.Medicaid.gov dataset metadata, with a documented September 2026 release URL as a fallback.
+The pipeline retrieves current authoritative source files, reconstructs the analytical panels, reruns the causal models and robustness checks, and builds the policy-facing dashboard.
 
 ## Responsible interpretation
 
