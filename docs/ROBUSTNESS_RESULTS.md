@@ -155,4 +155,4 @@ For that reason, the final project should describe the evidence as a **carefully
 
 The major pre-specified and policy-motivated sensitivity checks are complete. No specification produces evidence of a robust positive differential effect on the annual uninsured rate among low-income adults.
 
-Future extensions could examine additional outcomes or finer-grained populations, but they are not required for the validity of the completed portfolio analysis.
+Future extensions could examine additional outcomes or finer-grained populations, but they are not required for the validity of the completed analysis.
