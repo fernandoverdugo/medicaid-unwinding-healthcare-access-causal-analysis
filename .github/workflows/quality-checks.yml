@@ -59,6 +59,12 @@ jobs:
       - name: Run robustness checks
         run: python src/robustness_checks.py
 
+      - name: Build dashboard
+        run: python src/build_dashboard.py
+
+      - name: Validate dashboard
+        run: python src/validate_dashboard.py
+
       - name: Run tests
         run: python -m pytest -q
 
