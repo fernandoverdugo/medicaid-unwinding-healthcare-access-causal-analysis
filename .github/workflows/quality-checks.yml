@@ -50,6 +50,12 @@ jobs:
       - name: Run pre-treatment trend diagnostics
         run: python src/pretrend_diagnostic.py
 
+      - name: Estimate primary DiD
+        run: python src/estimate_primary_did.py
+
+      - name: Estimate event study
+        run: python src/event_study.py
+
       - name: Run tests
         run: python -m pytest -q
 
