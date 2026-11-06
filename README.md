@@ -51,7 +51,7 @@ The evidence does not show a robustly larger increase in annual uninsured rates 
 - **U.S. Census Bureau ACS 1-Year Table-Based Summary Files:** table C27016 for insurance coverage by poverty ratio and age
 - **Primary-source policy documentation:** used for timing and sensitivity decisions, including contemporaneous Medicaid expansion changes
 
-## Methods demonstrated
+## Methods
 
 Difference-in-differences, continuous treatment exposure, event-study diagnostics, state/year fixed effects, clustered inference, placebo timing, population-weighted estimation, alternative treatment definitions, exposure trimming, leave-one-state-out analysis, policy-confounding exclusions, reproducible data ingestion, automated validation, pytest, and GitHub Actions.
 
