@@ -161,6 +161,63 @@ def trimmed_exposure(panel):
     return result
 
 
+def exclude_contemporaneous_expansion_states(panel):
+    analysis = panel.loc[
+        ~panel["state_abbr"].isin(["NC", "SD"])
+        & panel["year"].isin(PRIMARY_YEARS)
+    ].copy()
+
+    result = fit_twfe(
+        analysis,
+        TREATMENT,
+        "post",
+        weighted=False,
+    )
+    result["excluded_states"] = ["NC", "SD"]
+    return result
+
+
+def median_split(panel):
+    state_exposure = panel[
+        ["state_abbr", TREATMENT]
+    ].drop_duplicates()
+
+    median = float(state_exposure[TREATMENT].median())
+    high_states = state_exposure.loc[
+        state_exposure[TREATMENT].ge(median),
+        "state_abbr",
+    ]
+
+    analysis = panel.loc[
+        panel["year"].isin(PRIMARY_YEARS)
+    ].copy()
+    analysis["high_exposure"] = analysis[
+        "state_abbr"
+    ].isin(high_states).astype(int)
+    analysis["high_x_post"] = (
+        analysis["high_exposure"] * analysis["post"]
+    )
+
+    model = smf.ols(
+        f"{OUTCOME} ~ C(state_abbr) + C(year) + high_x_post",
+        data=analysis,
+    ).fit(
+        cov_type="cluster",
+        cov_kwds={"groups": analysis["state_abbr"]},
+    )
+
+    beta = float(model.params["high_x_post"])
+    low, high = model.conf_int().loc["high_x_post"].tolist()
+
+    return {
+        "median_exposure_cutoff": median,
+        "high_exposure_states": int(len(high_states)),
+        "effect_percentage_points": beta,
+        "ci_95": [float(low), float(high)],
+        "p_value": float(model.pvalues["high_x_post"]),
+    }
+
+
 def leave_one_state_out(panel):
     analysis = panel.loc[
         panel["year"].isin(PRIMARY_YEARS)
@@ -214,6 +271,8 @@ def main():
         "procedural_exposure": procedural_exposure(panel),
         "placebo_timing": placebo_timing(panel),
         "trimmed_exposure_5_95": trimmed_exposure(panel),
+        "exclude_2023_expansion_states": exclude_contemporaneous_expansion_states(panel),
+        "median_split": median_split(panel),
         "leave_one_state_out": leave_one_state_out(panel),
     }
 
@@ -251,6 +310,20 @@ def main():
         "  5th-95th percentile exposure trim: "
         f"{trimmed['effect_per_10pp'] * 100:.3f} pp "
         f"(p={trimmed['p_value']:.3f})"
+    )
+
+    expansion = results["exclude_2023_expansion_states"]
+    print(
+        "  Excluding NC and SD 2023 Medicaid expansion: "
+        f"{expansion['effect_per_10pp'] * 100:.3f} pp "
+        f"(p={expansion['p_value']:.3f})"
+    )
+
+    split = results["median_split"]
+    print(
+        "  High-vs-low median exposure split: "
+        f"{split['effect_percentage_points'] * 100:.3f} pp "
+        f"(p={split['p_value']:.3f})"
     )
 
     loo = results["leave_one_state_out"]
