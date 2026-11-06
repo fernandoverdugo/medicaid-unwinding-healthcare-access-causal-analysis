@@ -20,6 +20,7 @@ def main():
     robustness = load_json("robustness_results.json")
     pretrend = load_json("pretrend_diagnostic.json")
     outcomes = load_json("outcome_panel_summary.json")
+    event_study = load_json("event_study_result.json")
 
     spec = primary["specification"]
     effect = spec["effect_per_10pp_higher_exposure"]
@@ -69,6 +70,18 @@ def main():
     annual_rows = "".join(
         f"<tr><td>{year}</td><td>{float(rate) * 100:.1f}%</td></tr>"
         for year, rate in annual.items()
+    )
+
+    event_rows = "".join(
+        (
+            f"<tr><td>{row['year']}</td><td>Reference</td><td>—</td></tr>"
+            if row["reference"]
+            else
+            f"<tr><td>{row['year']}</td>"
+            f"<td>{row['effect_per_10pp_exposure'] * 100:.3f} pp</td>"
+            f"<td>{row['p_value']:.3f}</td></tr>"
+        )
+        for row in event_study["estimates"]
     )
 
     joint = pretrend["joint_pretrend_test"]
@@ -123,6 +136,13 @@ a {{ color:inherit; }}
 <div class="card"><div class="label">Exposure × 2018–2022 outcome-change correlation</div><div class="kpi">{pretrend["correlation_exposure_with_2018_2022_change"]:.3f}</div></div>
 </div>
 <p class="small">The pre-trend evidence is not perfectly clean; the project therefore treats the causal interpretation as qualified rather than conclusive.</p>
+
+<h2>Event study</h2>
+<p class="small">Year-specific exposure interactions relative to 2022. Pre-period estimates are diagnostics; 2023 is the transition year.</p>
+<table>
+<thead><tr><th>Year</th><th>Effect per +10 pp exposure</th><th>p-value</th></tr></thead>
+<tbody>{event_rows}</tbody>
+</table>
 
 <h2>Median state uninsured rate</h2>
 <table>
