@@ -96,8 +96,25 @@ def fetch_year(year):
 
     frame = pd.read_csv(
         StringIO(response.text),
-        sep="|",
-        dtype={"GEO_ID": str},
+        sep=None,
+        engine="python",
+        dtype=str,
+    )
+
+    legacy_renames = {
+        "C27016_006E": "C27016_E006",
+        "C27016_008E": "C27016_E008",
+        "C27016_016E": "C27016_E016",
+        "C27016_018E": "C27016_E018",
+        "GEOID": "GEO_ID",
+        "GEOIDFQ": "GEO_ID",
+    }
+    frame = frame.rename(
+        columns={
+            old: new
+            for old, new in legacy_renames.items()
+            if old in frame.columns and new not in frame.columns
+        }
     )
 
     required = {"GEO_ID", *COLUMN_MAP.values()}
