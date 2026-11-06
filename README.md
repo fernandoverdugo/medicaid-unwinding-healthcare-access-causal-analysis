@@ -2,6 +2,8 @@
 
 A reproducible public-policy evaluation examining whether states with greater Medicaid disenrollment during the post-pandemic unwinding experienced larger changes in health-insurance coverage and healthcare access.
 
+**Live dashboard:** https://fernandoverdugo.github.io/medicaid-unwinding-healthcare-access-causal-analysis/
+
 ## Core question
 
 **Did greater exposure to Medicaid unwinding disenrollment lead to measurable deterioration in insurance coverage or healthcare access?**
