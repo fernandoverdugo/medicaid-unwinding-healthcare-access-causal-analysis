@@ -1,4 +1,5 @@
 import json
+from io import StringIO
 from pathlib import Path
 
 import pandas as pd
@@ -10,135 +11,146 @@ RAW = ROOT / "data" / "raw"
 META = ROOT / "data" / "metadata"
 
 YEARS = [2018, 2019, 2021, 2022, 2023, 2024, 2025]
-GROUP = "C27016"
 
+STATE_NAMES = {
+    "01": "Alabama",
+    "02": "Alaska",
+    "04": "Arizona",
+    "05": "Arkansas",
+    "06": "California",
+    "08": "Colorado",
+    "09": "Connecticut",
+    "10": "Delaware",
+    "11": "District of Columbia",
+    "12": "Florida",
+    "13": "Georgia",
+    "15": "Hawaii",
+    "16": "Idaho",
+    "17": "Illinois",
+    "18": "Indiana",
+    "19": "Iowa",
+    "20": "Kansas",
+    "21": "Kentucky",
+    "22": "Louisiana",
+    "23": "Maine",
+    "24": "Maryland",
+    "25": "Massachusetts",
+    "26": "Michigan",
+    "27": "Minnesota",
+    "28": "Mississippi",
+    "29": "Missouri",
+    "30": "Montana",
+    "31": "Nebraska",
+    "32": "Nevada",
+    "33": "New Hampshire",
+    "34": "New Jersey",
+    "35": "New Mexico",
+    "36": "New York",
+    "37": "North Carolina",
+    "38": "North Dakota",
+    "39": "Ohio",
+    "40": "Oklahoma",
+    "41": "Oregon",
+    "42": "Pennsylvania",
+    "44": "Rhode Island",
+    "45": "South Carolina",
+    "46": "South Dakota",
+    "47": "Tennessee",
+    "48": "Texas",
+    "49": "Utah",
+    "50": "Vermont",
+    "51": "Virginia",
+    "53": "Washington",
+    "54": "West Virginia",
+    "55": "Wisconsin",
+    "56": "Wyoming",
+}
 
-VARIABLES = {
-    "under_100_total_19_64": "C27016_006E",
-    "under_100_uninsured_19_64": "C27016_008E",
-    "fpl_100_137_total_19_64": "C27016_016E",
-    "fpl_100_137_uninsured_19_64": "C27016_018E",
+COLUMN_MAP = {
+    "under_100_total_19_64": "C27016_E006",
+    "under_100_uninsured_19_64": "C27016_E008",
+    "fpl_100_137_total_19_64": "C27016_E016",
+    "fpl_100_137_uninsured_19_64": "C27016_E018",
 }
 
 
-def group_metadata(year):
-    url = (
-        f"https://api.census.gov/data/{year}/acs/acs1/groups/"
-        f"{GROUP}.json"
+def summary_file_url(year):
+    filename = f"acsdt1y{year}-c27016.dat"
+
+    if year <= 2019:
+        return (
+            "https://www2.census.gov/programs-surveys/acs/summary_file/"
+            f"{year}/prototype/1YRData/{filename}"
+        )
+
+    return (
+        "https://www2.census.gov/programs-surveys/acs/summary_file/"
+        f"{year}/table-based-SF/data/1YRData/{filename}"
     )
-    response = requests.get(url, timeout=60)
-    response.raise_for_status()
-    return response.json(), url
-
-
-def validate_variable_labels(year, variables):
-    expected = {
-        "C27016_006E": [
-            "Under 1.00 of poverty threshold",
-            "19 to 64 years",
-        ],
-        "C27016_008E": [
-            "Under 1.00 of poverty threshold",
-            "19 to 64 years",
-            "No health insurance coverage",
-        ],
-        "C27016_016E": [
-            "1.00 to 1.37 of poverty threshold",
-            "19 to 64 years",
-        ],
-        "C27016_018E": [
-            "1.00 to 1.37 of poverty threshold",
-            "19 to 64 years",
-            "No health insurance coverage",
-        ],
-    }
-
-    for name, required_tokens in expected.items():
-        label = variables[name]["label"].replace(":", "")
-        for token in required_tokens:
-            if token not in label:
-                raise RuntimeError(
-                    f"{year} {name} label does not match contract: {label}"
-                )
-
-
-def variables_for_year(year):
-    metadata, metadata_url = group_metadata(year)
-    variables = metadata["variables"]
-    validate_variable_labels(year, variables)
-
-    return {
-        "metadata_url": metadata_url,
-        "groups": {
-            "Under 1.00 of poverty threshold": {
-                "total": VARIABLES["under_100_total_19_64"],
-                "uninsured": VARIABLES["under_100_uninsured_19_64"],
-            },
-            "1.00 to 1.37 of poverty threshold": {
-                "total": VARIABLES["fpl_100_137_total_19_64"],
-                "uninsured": VARIABLES["fpl_100_137_uninsured_19_64"],
-            },
-        },
-    }
 
 
 def fetch_year(year):
-    mapping = variables_for_year(year)
-    variable_names = ["NAME"]
-
-    for group in mapping["groups"].values():
-        variable_names.extend(
-            [group["total"], group["uninsured"]]
-        )
-
-    variable_names = list(dict.fromkeys(variable_names))
-
-    base_url = f"https://api.census.gov/data/{year}/acs/acs1"
-    params = {
-        "get": ",".join(variable_names),
-        "for": "state:*",
-    }
-
-    response = requests.get(base_url, params=params, timeout=60)
+    url = summary_file_url(year)
+    response = requests.get(url, timeout=120)
     response.raise_for_status()
 
-    try:
-        payload = response.json()
-    except requests.exceptions.JSONDecodeError as exc:
+    frame = pd.read_csv(
+        StringIO(response.text),
+        sep="|",
+        dtype={"GEO_ID": str},
+    )
+
+    required = {"GEO_ID", *COLUMN_MAP.values()}
+    missing = required - set(frame.columns)
+    if missing:
         raise RuntimeError(
-            f"Census API returned non-JSON content for {year}: "
-            f"{response.text[:300]}"
-        ) from exc
+            f"{year} C27016 summary file missing columns: "
+            + ", ".join(sorted(missing))
+        )
 
-    api_url = response.url
+    state_rows = frame.loc[
+        frame["GEO_ID"].str.match(r"^0400000US\d{2}$", na=False)
+    ].copy()
 
-    frame = pd.DataFrame(payload[1:], columns=payload[0])
-    frame["year"] = year
+    state_rows["state"] = state_rows["GEO_ID"].str[-2:]
+    state_rows = state_rows.loc[
+        state_rows["state"].isin(STATE_NAMES)
+    ].copy()
 
-    total_columns = [
-        group["total"] for group in mapping["groups"].values()
-    ]
-    uninsured_columns = [
-        group["uninsured"] for group in mapping["groups"].values()
-    ]
+    if len(state_rows) != 51:
+        raise RuntimeError(
+            f"{year} state table returned {len(state_rows)} states/DC."
+        )
 
-    for column in total_columns + uninsured_columns:
-        frame[column] = pd.to_numeric(
-            frame[column],
+    for column in COLUMN_MAP.values():
+        state_rows[column] = pd.to_numeric(
+            state_rows[column],
             errors="coerce",
         )
 
-    frame["low_income_adults_19_64"] = frame[
+    state_rows["year"] = year
+    state_rows["NAME"] = state_rows["state"].map(STATE_NAMES)
+
+    total_columns = [
+        COLUMN_MAP["under_100_total_19_64"],
+        COLUMN_MAP["fpl_100_137_total_19_64"],
+    ]
+    uninsured_columns = [
+        COLUMN_MAP["under_100_uninsured_19_64"],
+        COLUMN_MAP["fpl_100_137_uninsured_19_64"],
+    ]
+
+    state_rows["low_income_adults_19_64"] = state_rows[
         total_columns
-    ].sum(axis=1, min_count=len(total_columns))
+    ].sum(axis=1, min_count=2)
 
-    frame["uninsured_low_income_adults_19_64"] = frame[
+    state_rows["uninsured_low_income_adults_19_64"] = state_rows[
         uninsured_columns
-    ].sum(axis=1, min_count=len(uninsured_columns))
+    ].sum(axis=1, min_count=2)
 
-    frame["uninsured_rate_low_income_adults_19_64"] = (
-        frame["uninsured_low_income_adults_19_64"]
-        / frame["low_income_adults_19_64"]
+    state_rows["uninsured_rate_low_income_adults_19_64"] = (
+        state_rows["uninsured_low_income_adults_19_64"]
+        / state_rows["low_income_adults_19_64"]
     )
 
     keep = [
@@ -150,7 +162,7 @@ def fetch_year(year):
         "uninsured_rate_low_income_adults_19_64",
     ]
 
-    return frame[keep], mapping, api_url
+    return state_rows[keep], url
 
 
 def main():
@@ -159,9 +171,10 @@ def main():
 
     frames = []
     provenance = {
-        "dataset": "ACS 1-Year Detailed Tables",
-        "group": GROUP,
+        "dataset": "ACS 1-Year Table-Based Summary File",
+        "table": "C27016",
         "years": YEARS,
+        "columns": COLUMN_MAP,
         "excluded_years": {
             "2020": (
                 "Census released experimental 2020 ACS 1-year estimates "
@@ -172,13 +185,9 @@ def main():
     }
 
     for year in YEARS:
-        frame, mapping, api_url = fetch_year(year)
+        frame, url = fetch_year(year)
         frames.append(frame)
-        provenance["year_sources"][str(year)] = {
-            "api_url": api_url,
-            "metadata_url": mapping["metadata_url"],
-            "variables": mapping["groups"],
-        }
+        provenance["year_sources"][str(year)] = {"url": url}
 
     combined = pd.concat(frames, ignore_index=True)
     combined = combined.sort_values(
