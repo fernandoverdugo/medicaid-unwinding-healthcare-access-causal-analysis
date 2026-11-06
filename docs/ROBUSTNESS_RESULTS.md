@@ -21,6 +21,8 @@ The robustness results do not reveal a hidden large positive effect that is bein
 | Procedural disenrollment exposure | **−0.012 pp** | 0.984 |
 | Placebo 2021–2022 treatment timing | **−0.310 pp** | 0.593 |
 | 5th–95th percentile exposure trim | **−0.491 pp** | 0.440 |
+| Excluding NC and SD 2023 expansion states | **−0.052 pp** | 0.914 |
+| High-vs-low median exposure split | **+0.069 pp** | 0.944 |
 
 None of these specifications produces a statistically distinguishable treatment effect.
 
@@ -93,6 +95,12 @@ Because those expansions directly affect insurance coverage among low-income adu
 
 This exclusion is policy-driven and was not selected based on whether it strengthens the treatment estimate.
 
+Result:
+
+> **−0.052 pp** per 10 percentage-point higher disenrollment exposure, p = **0.914**.
+
+Removing the two contemporaneous expansion states leaves the substantive conclusion unchanged.
+
 ## Binary exposure sensitivity
 
 The robustness pipeline also includes a secondary high-versus-low exposure specification based on the median treatment rate.
@@ -100,6 +108,12 @@ The robustness pipeline also includes a secondary high-versus-low exposure speci
 The continuous treatment specification remains primary because it preserves more information and avoids making the result depend on a single cutoff.
 
 The binary model is included only as an interpretability check.
+
+Result:
+
+> High-exposure states versus lower-exposure states: **+0.069 pp**, p = **0.944**.
+
+This secondary specification is also effectively null.
 
 ## What the robustness results support
 
