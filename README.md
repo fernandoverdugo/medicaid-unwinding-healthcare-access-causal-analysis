@@ -66,7 +66,7 @@ KFF may be used for cross-checking and contextual interpretation, but the analyt
 
 ## Repository status
 
-**Phase 4 — robustness and sensitivity analysis**
+**Phase 5 — final synthesis and presentation**
 
 Treatment construction and the ACS state-year outcome panel are complete. The primary treatment was locked before outcome estimation.
 
@@ -87,6 +87,9 @@ The primary result remains small and statistically nonsignificant across the mai
 | Procedural disenrollment exposure | −0.012 pp | 0.984 |
 | Placebo timing | −0.310 pp | 0.593 |
 | 5th–95th percentile treatment trim | −0.491 pp | 0.440 |
+| Excluding 2021 pre-period | −0.015 pp | 0.978 |
+| Excluding NC & SD expansion states | −0.052 pp | 0.914 |
+| High-vs-low median split | +0.069 pp | 0.944 |
 
 Leave-one-state-out estimates range from **−0.298 to +0.147 pp**, indicating that no single state drives the result.
 
@@ -99,8 +102,8 @@ See [Robustness & Sensitivity Results](docs/ROBUSTNESS_RESULTS.md) for interpret
 3. ~~Build state-level outcome panels.~~
 4. ~~Produce pre-treatment trend diagnostics.~~
 5. ~~Estimate the primary difference-in-differences specification.~~
-6. **Run robustness, placebo, and sensitivity analyses.**
-7. Evaluate subgroup and alternative-treatment specifications.
+6. ~~Run robustness, placebo, and sensitivity analyses.~~
+7. **Synthesize findings and finalize interpretation.**
 8. Publish a concise policy-evaluation dashboard or report.
 
 ## Repository structure
