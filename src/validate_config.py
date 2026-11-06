@@ -23,6 +23,9 @@ def main():
         "primary_design",
         "secondary_design",
         "causal_label_requires_diagnostics",
+        "primary_treatment",
+        "primary_treatment_locked",
+        "primary_treatment_scale",
     }
 
     missing = required_config - set(config)
@@ -45,6 +48,21 @@ def main():
         raise RuntimeError(
             "Causal interpretation must remain conditional on diagnostics."
         )
+
+    if not config["primary_treatment_locked"]:
+        raise RuntimeError("Primary treatment must remain pre-outcome locked.")
+
+    if config["primary_treatment"] != "disenrollment_rate_completed":
+        raise RuntimeError("Primary treatment contract has changed.")
+
+    if config["primary_treatment_scale"] != "continuous":
+        raise RuntimeError("Primary treatment must remain continuous.")
+
+    if (
+        config["primary_outcome_candidate"]
+        != "uninsured_rate_low_income_adults_19_64"
+    ):
+        raise RuntimeError("Primary outcome contract has changed.")
 
     if max(config["pre_period_target"]) >= config["transition_year"]:
         raise RuntimeError("Pre-period years overlap the transition year.")
