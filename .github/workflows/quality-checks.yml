@@ -41,6 +41,15 @@ jobs:
       - name: Build and audit treatment exposure
         run: python src/build_unwinding_exposure.py
 
+      - name: Fetch ACS outcome data
+        run: python src/fetch_acs_outcomes.py
+
+      - name: Build ACS outcome panel
+        run: python src/build_outcome_panel.py
+
+      - name: Run pre-treatment trend diagnostics
+        run: python src/pretrend_diagnostic.py
+
       - name: Run tests
         run: python -m pytest -q
 
