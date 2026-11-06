@@ -66,19 +66,25 @@ KFF may be used for cross-checking and contextual interpretation, but the analyt
 
 ## Repository status
 
-**Phase 2 — treatment construction and audit**
+**Phase 3 — outcome-panel construction**
 
-The causal framework, source registry, treatment-construction pipeline, and automated treatment tests are now in place.
+The treatment audit is complete and the primary exposure is now locked **before outcome estimation**.
 
-The current primary treatment candidate is the share of **completed renewal outcomes that resulted in disenrollment** during each state's initial 14-month unwinding window. Outcome estimation has intentionally not started yet.
+Primary treatment:
 
-See [Treatment Construction](docs/TREATMENT_CONSTRUCTION.md) for the denominator, state-specific timing rule, updated-report handling, and comparability cautions.
+> **Disenrollment rate among completed renewals during each state's initial 14-month unwinding window**
+
+The live CMS audit produced complete 14-month treatment windows for all 51 states/DC. The median exposure was **30.7%**, with an interquartile range of **24.6%–38.6%**.
+
+The primary specification will use this exposure continuously rather than forcing states into an arbitrary treatment/control split.
+
+See [Treatment Construction](docs/TREATMENT_CONSTRUCTION.md) and [Treatment Audit](docs/TREATMENT_AUDIT.md).
 
 ## Project roadmap
 
 1. ~~Validate authoritative unwinding and outcome data sources.~~
-2. **Build and audit the state-level unwinding treatment panel.**
-3. Build state-level outcome panels.
+2. ~~Build and audit the state-level unwinding treatment panel.~~
+3. **Build state-level outcome panels.**
 4. Produce pre-treatment trend diagnostics.
 5. Estimate the primary difference-in-differences specification.
 6. Add event-study and robustness analyses.
