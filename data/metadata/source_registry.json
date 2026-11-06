@@ -1,0 +1,36 @@
+{
+  "sources": [
+    {
+      "source_id": "cms_eligibility_processing",
+      "agency": "Centers for Medicare & Medicaid Services",
+      "name": "State Medicaid and CHIP Eligibility Processing Data",
+      "url": "https://data.medicaid.gov/dataset/5abea2e0-3f8e-4b49-a50d-d63d5fd9103c",
+      "role": "Primary treatment and renewal-process source",
+      "notes": "State-reported renewal outcomes; preserve reporting month, revision timing, and state-specific caveats."
+    },
+    {
+      "source_id": "cms_monthly_enrollment",
+      "agency": "Centers for Medicare & Medicaid Services",
+      "name": "Monthly Medicaid and CHIP Application, Eligibility Determination, and Enrollment Data",
+      "url": "https://www.medicaid.gov/medicaid/national-medicaid-chip-program-information/medicaid-chip-enrollment-data/monthly-medicaid-chip-application-eligibility-determination-and-enrollment-reports-data",
+      "role": "Enrollment trend and treatment cross-check",
+      "notes": "Monthly enrollment is a net stock measure and should not be equated directly with renewal terminations."
+    },
+    {
+      "source_id": "cms_unwinding_reports",
+      "agency": "Centers for Medicare & Medicaid Services",
+      "name": "Archived Medicaid and CHIP Unwinding Monthly Data Reports",
+      "url": "https://www.medicaid.gov/resources-for-states/coronavirus-disease-2019-covid-19/archived-unwinding-and-returning-regular-operations-after-covid-19/data-reporting/monthly-data-reports",
+      "role": "Historical unwinding documentation and state renewal outcomes",
+      "notes": "Use as a historical cross-check and for state/reporting-period documentation."
+    },
+    {
+      "source_id": "acs_health_insurance",
+      "agency": "U.S. Census Bureau",
+      "name": "American Community Survey Health Insurance Coverage Tables",
+      "url": "https://www.census.gov/data/tables/time-series/demo/health-insurance/acs-hi.2024.html",
+      "role": "Primary outcome candidate",
+      "notes": "State-level insurance coverage outcomes with subgroup tables; pull multiple years for pre/post analysis."
+    }
+  ]
+}
