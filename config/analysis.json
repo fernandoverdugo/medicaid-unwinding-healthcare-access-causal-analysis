@@ -1,9 +1,17 @@
 {
   "project": "medicaid-unwinding-healthcare-access-causal-analysis",
   "analysis_level": "state_year",
-  "pre_period_target": [2019, 2020, 2021, 2022],
+  "pre_period_target": [
+    2019,
+    2020,
+    2021,
+    2022
+  ],
   "transition_year": 2023,
-  "post_period_target": [2024, 2025],
+  "post_period_target": [
+    2024,
+    2025
+  ],
   "primary_treatment_candidate": "disenrollment_rate",
   "primary_outcome_candidate": "uninsured_rate_low_income_adults_19_64",
   "treatment_threshold_rule": "pre-specified after treatment-data audit and before outcome estimation",
@@ -11,5 +19,16 @@
   "primary_design": "difference_in_differences",
   "secondary_design": "event_study",
   "report_weighted_and_unweighted": true,
-  "causal_label_requires_diagnostics": true
+  "causal_label_requires_diagnostics": true,
+  "primary_treatment": "disenrollment_rate_completed",
+  "primary_treatment_locked": true,
+  "primary_treatment_scale": "continuous",
+  "primary_treatment_lock_reason": "Complete 51-jurisdiction coverage, full 14-month windows, and meaningful cross-state variation documented in docs/TREATMENT_AUDIT.md",
+  "treatment_audit_distribution": {
+    "p05": 0.139,
+    "p25": 0.246,
+    "median": 0.307,
+    "p75": 0.386,
+    "p95": 0.525
+  }
 }
