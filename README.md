@@ -76,6 +76,22 @@ This is **not yet presented as a definitive causal null**. The joint pre-trend t
 
 See [Treatment Audit](docs/TREATMENT_AUDIT.md), [Outcome Construction](docs/OUTCOME_CONSTRUCTION.md), and [Primary Results](docs/PRIMARY_RESULTS.md).
 
+## Robustness snapshot
+
+The primary result remains small and statistically nonsignificant across the main sensitivity checks:
+
+| Check | Effect per 10 pp higher exposure | p-value |
+| --- | ---: | ---: |
+| Primary DiD | −0.095 pp | 0.858 |
+| Population weighted | −0.256 pp | 0.668 |
+| Procedural disenrollment exposure | −0.012 pp | 0.984 |
+| Placebo timing | −0.310 pp | 0.593 |
+| 5th–95th percentile treatment trim | −0.491 pp | 0.440 |
+
+Leave-one-state-out estimates range from **−0.298 to +0.147 pp**, indicating that no single state drives the result.
+
+See [Robustness & Sensitivity Results](docs/ROBUSTNESS_RESULTS.md) for interpretation and remaining identification cautions.
+
 ## Project roadmap
 
 1. ~~Validate authoritative unwinding and outcome data sources.~~
