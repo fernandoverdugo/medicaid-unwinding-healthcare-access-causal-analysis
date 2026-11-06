@@ -111,6 +111,13 @@ def main():
             }
         )
 
+    joint = model.wald_test(
+        "exposure_x_2019 = exposure_x_2021 = exposure_x_2022 = 0",
+        scalar=True,
+    )
+    joint_statistic = float(joint.statistic)
+    joint_p_value = float(joint.pvalue)
+
     first = (
         pre.loc[pre["year"].eq(2018), ["state_abbr", OUTCOME, TREATMENT]]
         .rename(columns={OUTCOME: "outcome_2018"})
@@ -135,6 +142,11 @@ def main():
         "reference_year": PRE_YEARS[0],
         "interaction_estimates": interaction_rows,
         "correlation_exposure_with_2018_2022_change": correlation,
+        "joint_pretrend_test": {
+            "statistic": joint_statistic,
+            "p_value": joint_p_value,
+            "null": "All pre-period exposure interactions equal zero",
+        },
         "interpretation_rule": (
             "Pre-period interactions are diagnostics, not a binary pass/fail "
             "test. Large systematic pre-trends would weaken a causal claim."
@@ -159,6 +171,10 @@ def main():
                 f"SE={row['std_error']:.4f}, p={row['p_value']:.3f}"
             )
 
+    print(
+        "Joint pre-trend test: "
+        f"stat={joint_statistic:.3f}, p={joint_p_value:.3f}"
+    )
     print(
         "Correlation between unwinding exposure and 2018-2022 "
         f"outcome change: {correlation:.3f}"
