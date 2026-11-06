@@ -161,6 +161,22 @@ def trimmed_exposure(panel):
     return result
 
 
+def exclude_2021_preperiod(panel):
+    years = [2018, 2019, 2022, 2024, 2025]
+    analysis = panel.loc[
+        panel["year"].isin(years)
+    ].copy()
+
+    result = fit_twfe(
+        analysis,
+        TREATMENT,
+        "post",
+        weighted=False,
+    )
+    result["years"] = years
+    return result
+
+
 def exclude_contemporaneous_expansion_states(panel):
     analysis = panel.loc[
         ~panel["state_abbr"].isin(["NC", "SD"])
@@ -271,6 +287,7 @@ def main():
         "procedural_exposure": procedural_exposure(panel),
         "placebo_timing": placebo_timing(panel),
         "trimmed_exposure_5_95": trimmed_exposure(panel),
+        "exclude_2021_preperiod": exclude_2021_preperiod(panel),
         "exclude_2023_expansion_states": exclude_contemporaneous_expansion_states(panel),
         "median_split": median_split(panel),
         "leave_one_state_out": leave_one_state_out(panel),
@@ -310,6 +327,13 @@ def main():
         "  5th-95th percentile exposure trim: "
         f"{trimmed['effect_per_10pp'] * 100:.3f} pp "
         f"(p={trimmed['p_value']:.3f})"
+    )
+
+    no_2021 = results["exclude_2021_preperiod"]
+    print(
+        "  Excluding 2021 pre-period observation: "
+        f"{no_2021['effect_per_10pp'] * 100:.3f} pp "
+        f"(p={no_2021['p_value']:.3f})"
     )
 
     expansion = results["exclude_2023_expansion_states"]
