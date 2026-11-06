@@ -2,11 +2,11 @@
 
 ## Status
 
-**Preliminary causal estimate — robustness required before causal interpretation**
+**Primary estimate finalized; interpretation remains qualified by pre-trend diagnostics.**
 
-The primary continuous-exposure difference-in-differences model has been estimated using the treatment and outcome definitions locked before outcome estimation.
+The primary continuous-exposure difference-in-differences model uses treatment and outcome definitions that were locked before outcome estimation. The estimate has since been stress-tested with weighting, placebo timing, alternative exposure measures, exposure trimming, policy-confounding exclusions, binary exposure, exclusion of the 2021 pre-period observation, and leave-one-state-out analysis.
 
-The result is not presented as a definitive causal effect because the pre-treatment diagnostics warrant additional sensitivity analysis.
+See [Robustness & Sensitivity Results](ROBUSTNESS_RESULTS.md) for the completed checks.
 
 ## Primary specification
 
@@ -114,19 +114,7 @@ The current evidence supports a restrained conclusion:
 
 > Low-income adult uninsured rates increased nationally after the unwinding transition, but the primary state-level continuous-exposure model does not show that states with higher Medicaid disenrollment exposure experienced a reliably larger post-period increase. Because pre-treatment diagnostics are not perfectly clean, robustness analysis is required before interpreting the near-zero DiD coefficient causally.
 
-## Required robustness work
+## Robustness status
 
-Before the project makes a final causal claim, the analysis should test:
+The planned robustness work is complete. Across all major sensitivity checks, estimates remain small and statistically nonsignificant. The final interpretation is documented in [FINAL_REPORT.md](FINAL_REPORT.md).
 
-1. population-weighted versus unweighted estimation;
-2. alternative treatment measures, especially procedural disenrollment exposure;
-3. alternative pre-period reference years;
-4. exclusion of 2021 or pandemic-distorted pre-period specifications;
-5. placebo treatment timing;
-6. leave-one-state-out sensitivity;
-7. sensitivity to high- and low-exposure outliers;
-8. Medicaid expansion / major coverage-policy changes;
-9. alternative outcome definitions;
-10. binary high-versus-low exposure as a secondary interpretability check.
-
-The final write-up should preserve the primary pre-specified result even if a robustness specification produces a larger or statistically significant estimate.
