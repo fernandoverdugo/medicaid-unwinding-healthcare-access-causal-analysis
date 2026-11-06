@@ -111,9 +111,9 @@ This analysis cannot rule out:
 - residual state-level confounding;
 - pandemic-era disruptions to pre-treatment trends.
 
-## Portfolio value
+## Analytical contribution
 
-This project demonstrates:
+The completed analysis integrates:
 
 - causal research design;
 - treatment construction from administrative data;
