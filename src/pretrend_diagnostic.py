@@ -69,36 +69,44 @@ def main():
     if len(pre) != 51 * len(PRE_YEARS):
         raise RuntimeError("Pre-period panel is incomplete.")
 
+    diagnostic_years = [2019, 2021, 2022]
+
+    for year in diagnostic_years:
+        column = f"exposure_x_{year}"
+        pre[column] = (
+            pre[TREATMENT] * pre["year"].eq(year).astype(int)
+        )
+
+    interaction_terms = " + ".join(
+        f"exposure_x_{year}" for year in diagnostic_years
+    )
+
     model = smf.ols(
-        f"{OUTCOME} ~ C(year) + C(state_abbr) + "
-        f"{TREATMENT}:C(year)",
+        f"{OUTCOME} ~ C(year) + C(state_abbr) + {interaction_terms}",
         data=pre,
     ).fit(
         cov_type="cluster",
         cov_kwds={"groups": pre["state_abbr"]},
     )
 
-    interaction_rows = []
-    for year in PRE_YEARS:
-        if year == PRE_YEARS[0]:
-            interaction_rows.append(
-                {
-                    "year": year,
-                    "coefficient": 0.0,
-                    "std_error": 0.0,
-                    "p_value": None,
-                    "reference": True,
-                }
-            )
-            continue
+    interaction_rows = [
+        {
+            "year": 2018,
+            "coefficient": 0.0,
+            "std_error": 0.0,
+            "p_value": None,
+            "reference": True,
+        }
+    ]
 
-        term = f"{TREATMENT}:C(year)[T.{year}]"
+    for year in diagnostic_years:
+        term = f"exposure_x_{year}"
         interaction_rows.append(
             {
                 "year": year,
-                "coefficient": float(model.params.get(term, float("nan"))),
-                "std_error": float(model.bse.get(term, float("nan"))),
-                "p_value": float(model.pvalues.get(term, float("nan"))),
+                "coefficient": float(model.params[term]),
+                "std_error": float(model.bse[term]),
+                "p_value": float(model.pvalues[term]),
                 "reference": False,
             }
         )
