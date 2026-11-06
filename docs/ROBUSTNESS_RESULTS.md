@@ -151,12 +151,8 @@ The joint pre-trend test has p = **0.096**, and the 2021 event-study coefficient
 
 For that reason, the final project should describe the evidence as a **carefully qualified causal evaluation** rather than claiming that the parallel-trends assumption has been conclusively established.
 
-## Next checks
+## Robustness conclusion
 
-Remaining high-value analyses are:
+The major pre-specified and policy-motivated sensitivity checks are complete. No specification produces evidence of a robust positive differential effect on the annual uninsured rate among low-income adults.
 
-1. final policy-confounding exclusion for 2023 expansion states;
-2. median high-versus-low exposure sensitivity;
-3. alternative pre-period specifications;
-4. alternative outcome definitions where available;
-5. a final results visualization and policy-facing summary.
+Future extensions could examine additional outcomes or finer-grained populations, but they are not required for the validity of the completed portfolio analysis.
