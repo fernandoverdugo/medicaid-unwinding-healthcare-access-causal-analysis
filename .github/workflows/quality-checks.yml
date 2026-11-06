@@ -35,6 +35,12 @@ jobs:
       - name: Import treatment construction module
         run: python -c "import sys; sys.path.insert(0, 'src'); import build_unwinding_exposure"
 
+      - name: Fetch live CMS treatment data
+        run: python src/fetch_cms_eligibility_processing.py
+
+      - name: Build and audit treatment exposure
+        run: python src/build_unwinding_exposure.py
+
       - name: Run tests
         run: python -m pytest -q
 
