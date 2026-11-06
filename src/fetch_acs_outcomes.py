@@ -123,6 +123,7 @@ def fetch_year(year):
         raise RuntimeError(
             f"{year} C27016 summary file missing columns: "
             + ", ".join(sorted(missing))
+            + f"; observed columns={frame.columns[:12].tolist()}"
         )
 
     state_rows = frame.loc[
