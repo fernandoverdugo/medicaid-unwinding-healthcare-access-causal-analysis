@@ -56,6 +56,9 @@ jobs:
       - name: Estimate event study
         run: python src/event_study.py
 
+      - name: Run robustness checks
+        run: python src/robustness_checks.py
+
       - name: Run tests
         run: python -m pytest -q
 
