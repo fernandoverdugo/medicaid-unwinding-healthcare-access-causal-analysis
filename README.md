@@ -88,7 +88,7 @@ See [Robustness & Sensitivity Results](docs/ROBUSTNESS_RESULTS.md) for interpret
 
 ```text
 .
-├── config/                  # Analysis assumptions and planned specifications
+├── config/                  # Locked analysis assumptions and specifications
 ├── data/
 │   ├── raw/                 # Source data retained in original form when practical
 │   ├── processed/           # Reproducible state-level analytical panels
@@ -126,7 +126,7 @@ The pipeline retrieves current authoritative source files, reconstructs the anal
 
 ## Responsible interpretation
 
-This project will not label a coefficient as causal merely because it comes from a difference-in-differences regression. Causal interpretation will depend on the plausibility of the identifying assumptions, especially comparable pre-treatment trends and the absence of major differential contemporaneous shocks.
+This project does not label a coefficient as causal merely because it comes from a difference-in-differences regression. The interpretation is explicitly conditioned on the plausibility of the identifying assumptions, especially comparable pre-treatment trends and the absence of major differential contemporaneous shocks.
 
 ## License
 
